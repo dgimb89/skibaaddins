@@ -21,32 +21,19 @@
          $this->mapper = $mapper;
      }
 
-     /**
-      * @NoAdminRequired
-      */
+    /**
+    * @NoAdminRequired
+    */
      public function index() {
          return new DataResponse($this->mapper->findAll());
      }
 
-     /**
-      * @NoAdminRequired
-      *
-      * @param int $fileid
-      */
-     public function show($fileid) {
-         try {
-             return new DataResponse($this->mapper->find($fileid));
-         } catch(Exception $e) {
-             return new DataResponse([], Http::STATUS_NOT_FOUND);
-         }
-     }
-
-     /**
-      * @NoAdminRequired
-      *
-      * @param int $fileid
-      * @param boolean $archived
-      */
+    /**
+    * @NoAdminRequired
+    *
+    * @param int $fileid
+    * @param boolean $archived
+    */
      public function create($fileid, $archived) {
          $archiveInfo = new ArchiveInfo();
          $archiveInfo->setFileid($fileid);
@@ -54,27 +41,11 @@
          return new DataResponse($this->mapper->insert($archiveInfo));
      }
 
-     /**
-      * @NoAdminRequired
-      *
-      * @param int $fileid
-      * @param boolean $archived
-      */
-     public function update($fileid, $archived) {
-         try {
-             $archiveInfo = $this->mapper->find($fileid);
-         } catch(Exception $e) {
-             return new DataResponse([], Http::STATUS_NOT_FOUND);
-         }
-         $archiveInfo->setArchived($archived);
-         return new DataResponse($this->mapper->update($archiveInfo));
-     }
-
-     /**
-      * @NoAdminRequired
-      *
-      * @param int $fileid
-      */
+    /**
+    * @NoAdminRequired
+    *
+    * @param int $fileid
+    */
      public function destroy($fileid) {
          try {
              $archiveInfo = $this->mapper->find($fileid);

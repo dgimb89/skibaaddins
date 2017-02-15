@@ -4,20 +4,19 @@ namespace OCA\SkibaAddins\Db;
 use OCP\IDb;
 use OCP\AppFramework\Db\Mapper;
 
-class NoteMapper extends Mapper {
+class ArchiveMapper extends Mapper {
 
     public function __construct(IDb $db) {
         parent::__construct($db, 'skibaaddins_archive', '\OCA\SkibaAddins\Db\ArchiveInfo');
     }
 
-    public function find($fileId) {
-        $sql = 'SELECT * FROM *PREFIX*skibaaddins_archive WHERE fileid = ?';
-        return $this->findEntity($sql, [$id, $userId]);
+    public function find($fileid) {
+        $sql = 'SELECT * FROM oc_skibaaddins_archive WHERE fileid = ?';
+        return $this->findEntity($sql, [$fileid]);
     }
 
     public function findAll() {
-        $sql = 'SELECT * FROM *PREFIX*skibaaddins_archive';
+        $sql = 'SELECT * FROM oc_skibaaddins_archive WHERE archived != "false"';
         return $this->findEntities($sql);
     }
-
 }

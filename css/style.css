@@ -27,3 +27,7 @@ ul.pagination li.active a {
 }
 
 ul.pagination li:not(.active) a:hover {background-color: #ddd;}
+
+tr.archived {
+	display: none;
+}

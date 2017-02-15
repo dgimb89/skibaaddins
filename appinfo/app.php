@@ -16,6 +16,7 @@ use OCP\AppFramework\App;
 $eventDispatcher = \OC::$server->getEventDispatcher();
 $eventDispatcher->addListener('OCA\Files::loadAdditionalScripts', function() {
 	script('skibaaddins', 'script');
+	style ('skibaaddins', 'style' );
 });
 
 \OCP\App::registerAdmin('skibaaddins', 'shareoverview');

@@ -25,3 +25,6 @@ $this 	->create('skibaaddins_ajax_getsharesinfo', 'ajax/getsharesinfo.php')
 
 $this 	->create('skibaaddins_ajax_getactivityinfo', 'ajax/getactivityinfo.php')
 		->actionInclude('skibaaddins/ajax/getactivityinfo.php');
+
+$this 	->create('skibaaddins_ajax_getarchiveinfo', 'ajax/getarchiveinfo.php')
+		->actionInclude('skibaaddins/ajax/getarchiveinfo.php');

@@ -33,6 +33,7 @@
 			// extend row prototype
 			var that = this;
 			that._originalSharePaths = null;
+			that._archiveInfo = null;
 			fileList.$el.addClass('has-skiba');
 			var oldCreateRow = fileList._createRow;
 
@@ -44,34 +45,46 @@
 
 			var updateRow = function(tr, fileData) {
 				// stop update when ajax failed
-				if(that._originalSharePaths === false)
+				if(that._originalSharePaths === false && that._archiveInfo === false)
 					return;
 
 				// stall update until data received
-				if(that._originalSharePaths === null) {
+				if(that._originalSharePaths === null || that._archiveInfo === null) {
 					setTimeout(updateRow.bind(that, tr, fileData), 50);
 					return;
 				}
 
-				var displayName = fileData.displayName || fileData.name;
-				var directory = '';
-				if(fileData.id in that._originalSharePaths) {
-					directory = that._originalSharePaths[fileData.id];
+				if(that._originalSharePaths && isSharedWithYou(fileData) && fileData.id in that._originalSharePaths) {
+					var displayName = fileData.displayName || fileData.name;
+					var directory = that._originalSharePaths[fileData.id];
 					directory = directory.substr(0, directory.lastIndexOf(fileData.name));
+
+					// apply displayname
+					$(tr).find('span.innernametext').text(directory + displayName);
 				}
 
-				// apply displayname
-				$(tr).find('span.innernametext').text(directory + displayName);
+				if(that._archiveInfo && $.inArray(fileData.id, that._archiveInfo) > -1) {
+					$(tr).addClass('archived');
+				}
 			};
 
 			fileList._createRow = function(fileData) {
 				var tr = oldCreateRow.apply(this, arguments);
-
-				if(isSharedWithYou(fileData))
-					updateRow(tr, fileData);
+				updateRow(tr, fileData);
 
 				return tr;
 			}
+
+			// requesting archive info via ajax
+			var posting = $.get(OC.filePath('skibaaddins', 'ajax', 'getarchiveinfo.php'));
+			posting.done(function(res) {
+				that._archiveInfo = res.data;
+			});
+			posting.fail(function() {
+				that._archiveInfo = false;
+				fileList._createRow = oldCreateRow;
+			});
+
 
 			// requesting mount point via ajax
 			var posting = $.get(OC.filePath('skibaaddins', 'ajax', 'getoriginalfolderstructure.php'));
@@ -88,7 +101,28 @@
 			if (this.allowedLists.indexOf(fileList.id) < 0) {
 				return;
 			}
+
 			this._extendFileList(fileList);
+			var fileActions = fileList.fileActions;
+
+			fileActions.registerAction({
+				name: 'Archive',
+				displayName: '',
+				mime: 'all',
+				permissions: OC.PERMISSION_ALL,
+				iconClass: 'icon-folder',
+				type: OCA.Files.FileActions.TYPE_INLINE,
+				actionHandler: function(fileName) {
+					var tr = $('tr[data-file="'+ fileName +'"]').first();
+					var fileid = $(tr).data('id');
+					$.post(OC.filePath('skibaaddins', 'ajax', 'getarchiveinfo.php'), {fileid: fileid, archived: !$(tr).hasClass('archived')});
+					$(tr).toggleClass('archived');
+				},
+				render: function(actionSpec, isDefault, context) {
+					return fileActions._defaultRenderAction.call(fileActions, actionSpec, isDefault, context);
+				}
+			});
+
 		},
 	};
 })(OCA);
