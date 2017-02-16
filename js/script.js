@@ -128,3 +128,21 @@
 })(OCA);
 
 OC.Plugins.register('OCA.Files.FileList', OCA.Files.SkibaPlugin);
+
+$(document).ready(function () {
+	"use strict";
+	if ($('#body-login').length > 0) {
+		return true; //deactivate on login page
+	}
+
+	if ($('#filesApp').val()) {
+
+		// Button for opening files list as gallery view
+		var archiveSwitch = $('<label class="switch button view-switcher" title="Archivierte Dateien anzeigen"><input id="archive-switch" type="checkbox"><div class="slider"></div></label>');
+		$(archiveSwitch).tipsy({gravity: 'ne'});
+		$('#controls').prepend(archiveSwitch);
+		$('#archive-switch').click(function() {
+			$('#filestable').toggleClass('show-archived');
+		});
+	}
+});

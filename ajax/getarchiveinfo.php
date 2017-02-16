@@ -17,7 +17,7 @@ $controller = $container->query(
 
 if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$controller->destroy($_POST['fileid']);
-	$controller->create($_POST['fileid'], $_POST['archived']);
+	$controller->create($_POST['fileid'], $_POST['archived'] == "true" ? 1 : 0);
 
 	OCP\JSON::success();
 } else {

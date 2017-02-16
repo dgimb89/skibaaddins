@@ -48,7 +48,7 @@
     */
      public function destroy($fileid) {
          try {
-             $archiveInfo = $this->mapper->find($fileid);
+             $archiveInfo = $this->mapper->findByFileId($fileid);
          } catch(Exception $e) {
              return new DataResponse([], Http::STATUS_NOT_FOUND);
          }
